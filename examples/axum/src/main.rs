@@ -33,9 +33,9 @@ where
     let new_job = storage.push(input).await;
 
     match new_job {
-        Ok(()) => (
+        Ok(job_id) => (
             StatusCode::CREATED,
-            "Job was successfully added".to_string(),
+            format!("Job was successfully added: {job_id}"),
         ),
         Err(e) => (
             StatusCode::INTERNAL_SERVER_ERROR,
