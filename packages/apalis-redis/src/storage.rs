@@ -230,7 +230,7 @@ where
 {
     type Output = T;
 
-    async fn push(&mut self, job: Self::Output) -> StorageResult<()> {
+    async fn push(&mut self, job: Self::Output) -> StorageResult<String> {
         let mut conn = self.conn.clone();
         let push_job = self.scripts.push_job.clone();
         let job_data_hash = self.queue.job_data_hash.to_string();
@@ -249,10 +249,11 @@ where
             .key(job_data_hash)
             .key(active_jobs_list)
             .key(signal_list)
-            .arg(job_id)
+            .arg(&job_id)
             .arg(job)
             .invoke_async(&mut conn)
             .await
+            .map(|()| job_id)
             .map_err(|e| StorageError::Database(Box::from(e)))
     }
 

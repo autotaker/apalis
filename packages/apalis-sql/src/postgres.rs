@@ -116,7 +116,7 @@ where
     /// ```sql
     /// Select apalis.push_job(job_type::text, job::json);
     /// ```
-    async fn push(&mut self, job: Self::Output) -> StorageResult<()> {
+    async fn push(&mut self, job: Self::Output) -> StorageResult<String> {
         let id = Uuid::new_v4();
         let query = "INSERT INTO apalis.jobs VALUES ($1, $2, $3, 'Pending', 0, 25, NOW() , NULL, NULL, NULL, NULL)";
         let pool = self.pool.clone();
@@ -126,14 +126,15 @@ where
             .await
             .map_err(|e| StorageError::Database(Box::from(e)))?;
         let job_type = T::NAME;
+        let job_id = id.to_string();
         sqlx::query(query)
             .bind(job)
-            .bind(id.to_string())
+            .bind(&job_id)
             .bind(job_type.to_string())
             .execute(&mut pool)
             .await
-            .map_err(|e| StorageError::Database(Box::from(e)))?;
-        Ok(())
+            .map(|_| job_id)
+            .map_err(|e| StorageError::Database(Box::from(e)))
     }
 
     async fn schedule(

@@ -26,4 +26,4 @@ async-trait = "0.1.53"
 [features]
 default = ["storage"]
 storage = ["apalis-core/storage"]
-pubsub = ["apalis-core/worker"]
+pubsub = ["apalis-core/worker", "apalis-core/storage", "apalis-core/job-service", "apalis-core/tower-util"]

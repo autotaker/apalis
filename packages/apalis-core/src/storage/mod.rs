@@ -32,8 +32,8 @@ pub trait Storage: Clone {
 
     /// Pushes a job to a storage
     ///
-    /// TODO: return id
-    async fn push(&mut self, job: Self::Output) -> StorageResult<()>;
+    /// returns job id
+    async fn push(&mut self, job: Self::Output) -> StorageResult<String>;
 
     /// Push a job into the scheduled set
     async fn schedule(&mut self, job: Self::Output, on: DateTime<Utc>) -> StorageResult<()>;
