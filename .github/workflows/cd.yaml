@@ -1,0 +1,41 @@
+on: 
+  push:
+    branches-ignore: ['**']
+    tags: ['v*']
+
+name: Continuous delivery
+
+jobs:
+  publish:
+    name: Publish to crates.io
+    runs-on: ubuntu-latest
+    env:
+      publish_opts: --dry-run
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+      - uses: actions-rs/cargo@v1
+        with:
+          command: publish
+          args: ${{ env.publish_opts }} -p apalis-core
+      - uses: actions-rs/cargo@v1
+        with:
+          command: publish
+          args: ${{ env.publish_opts }} -p apalis-cron
+      - uses: actions-rs/cargo@v1
+        with:
+          command: publish
+          args: ${{ env.publish_opts }} -p apalis-redis
+      - uses: actions-rs/cargo@v1
+        with:
+          command: publish
+          args: ${{ env.publish_opts }} -p apalis-sql
+      - uses: actions-rs/cargo@v1
+        with:
+          command: publish
+          args: ${{ env.publish_opts }} -p apalis
+    

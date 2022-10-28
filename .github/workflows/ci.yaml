@@ -1,4 +1,9 @@
-on: [push, pull_request]
+on: 
+  push:
+    branches: [master, develop]
+    tags: ['v*']
+  pull_request:
+    types: [opened, synchronize, reopened]
 
 name: Continuous integration
 
