@@ -35,7 +35,7 @@ jobs:
       - name: check version integrity
         run: |
           ERROR=''
-          for dir in "." packages/apalis-{core,cron,redis,sql};
+          for dir in "." packages/apalis-{core,cron,redis,sql}; do
             PACKAGE=$(cargo get --root $dir -n)
             ACTUAL=$(cargo get --root $dir version)
             if [[ $VERSION_NUMBER != $ACTUAL ]]; then
