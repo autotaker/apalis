@@ -17,24 +17,58 @@ jobs:
           profile: minimal
           toolchain: stable
           override: true
-      - uses: actions-rs/cargo@v1
+      - name: install cargo-get
+        uses: actions-rs/cargo@v1
+        with:
+          command: install 
+          args: cargo-get
+      - name: set variables
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          VERSION_NUMBER=${VERSION%-*}
+          PUBLISH_OPTS=""
+          if [[ $VERSION == $VERSION_NUMBER ]]; then
+            PUBLISH_OPTS=--dry-run
+          fi
+          echo PUBLISH_OPTS=$PUBLISH_OPTS >> $GITHUB_ENV
+          echo VERSION_NUMBER=$VERSION_NUMBER >> $GITHUB_ENV
+      - name: check version integrity
+        run: |
+          $ERROR=''
+          for dir in "." packages/apalis-{core,cron,redis,sql};
+            $PACKAGE=$(cargo get --root $dir -n)
+            $ACTUAL=$(cargo get --root $dir version)
+            if [[ $VERSION_NUMBER != $ACTUAL ]]; then
+              echo ${PACKAGE}: expected version ${VERSION_NUMBER} but found ${ACTUAL}
+              ERROR=1
+            fi
+          done
+          if [[ $ERROR ]]; then
+            exit 1
+          fi
+      - name: publish apalis-core
+        uses: actions-rs/cargo@v1
         with:
           command: publish
-          args: ${{ env.publish_opts }} -p apalis-core
-      - uses: actions-rs/cargo@v1
+          args: $PUBLISH_OPTS -p apalis-core
+      - name: publish apalis-cron
+        uses: actions-rs/cargo@v1
         with:
           command: publish
-          args: ${{ env.publish_opts }} -p apalis-cron
-      - uses: actions-rs/cargo@v1
+          args: $PUBLISH_OPTS -p apalis-cron
+      - name: publish apalis-redis
+        uses: actions-rs/cargo@v1
         with:
           command: publish
-          args: ${{ env.publish_opts }} -p apalis-redis
-      - uses: actions-rs/cargo@v1
+          args: $PUBLISH_OPTS -p apalis-redis
+      - name: publish apalis-sql
+        uses: actions-rs/cargo@v1
         with:
           command: publish
-          args: ${{ env.publish_opts }} -p apalis-sql
-      - uses: actions-rs/cargo@v1
+          args: $PUBLISH_OPTS -p apalis-sql
+      - name: publish apalis
+        uses: actions-rs/cargo@v1
         with:
           command: publish
-          args: ${{ env.publish_opts }} -p apalis
+          args: $PUBLISH_OPTS -p apalis
     
