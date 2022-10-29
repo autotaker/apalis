@@ -34,10 +34,10 @@ jobs:
           echo VERSION_NUMBER=$VERSION_NUMBER >> $GITHUB_ENV
       - name: check version integrity
         run: |
-          $ERROR=''
+          ERROR=''
           for dir in "." packages/apalis-{core,cron,redis,sql};
-            $PACKAGE=$(cargo get --root $dir -n)
-            $ACTUAL=$(cargo get --root $dir version)
+            PACKAGE=$(cargo get --root $dir -n)
+            ACTUAL=$(cargo get --root $dir version)
             if [[ $VERSION_NUMBER != $ACTUAL ]]; then
               echo ${PACKAGE}: expected version ${VERSION_NUMBER} but found ${ACTUAL}
               ERROR=1
