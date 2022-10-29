@@ -8,8 +8,6 @@ jobs:
   publish:
     name: Publish to crates.io
     runs-on: ubuntu-latest
-    env:
-      publish_opts: --dry-run
     steps:
       - uses: actions/checkout@v2
       - uses: actions-rs/toolchain@v1
@@ -50,25 +48,25 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: publish
-          args: $PUBLISH_OPTS -p apalis-core
+          args: ${{ env.PUBLISH_OPTS }} -p apalis-core
       - name: publish apalis-cron
         uses: actions-rs/cargo@v1
         with:
           command: publish
-          args: $PUBLISH_OPTS -p apalis-cron
+          args: ${{ env.PUBLISH_OPTS }} -p apalis-cron
       - name: publish apalis-redis
         uses: actions-rs/cargo@v1
         with:
           command: publish
-          args: $PUBLISH_OPTS -p apalis-redis
+          args: ${{ env.PUBLISH_OPTS }} -p apalis-redis
       - name: publish apalis-sql
         uses: actions-rs/cargo@v1
         with:
           command: publish
-          args: $PUBLISH_OPTS -p apalis-sql
+          args: ${{ env.PUBLISH_OPTS }} -p apalis-sql
       - name: publish apalis
         uses: actions-rs/cargo@v1
         with:
           command: publish
-          args: $PUBLISH_OPTS -p apalis
+          args: ${{ env.PUBLISH_OPTS }} -p apalis
     
