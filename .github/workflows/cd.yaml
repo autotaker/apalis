@@ -5,12 +5,12 @@ on:
 name: Continuous delivery
 
 jobs:
-  test:
-    uses: ./.github/workflows/ci.yaml
+  # test:
+  #   uses: ./.github/workflows/ci.yaml
   publish:
     name: Publish to crates.io
     runs-on: ubuntu-latest
-    needs: [test]
+    # needs: [test]
     env:
       CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
     steps:
