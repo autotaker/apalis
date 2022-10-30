@@ -5,6 +5,8 @@ on:
 name: Continuous delivery
 
 jobs:
+  test:
+    uses: ./.github/workflows/ci.yaml
   publish:
     name: Publish to crates.io
     runs-on: ubuntu-latest
