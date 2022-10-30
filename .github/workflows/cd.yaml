@@ -22,17 +22,21 @@ jobs:
           args: cargo-get
       - name: set variables
         run: |
+          # vX.Y.Z is release version
+          # vX.Y.Z-foo is pre-release version
           VERSION=${GITHUB_REF#refs/tags/v}
           VERSION_NUMBER=${VERSION%-*}
           PUBLISH_OPTS="--dry-run"
           if [[ $VERSION == $VERSION_NUMBER ]]; then
             PUBLISH_OPTS=""
           fi
-          echo PUBLISH_OPTS=$PUBLISH_OPTS >> $GITHUB_ENV
-          echo VERSION_NUMBER=$VERSION_NUMBER >> $GITHUB_ENV
+          echo VERSION=${VERSION} >> $GITHUB_ENV
+          echo PUBLISH_OPTS=${PUBLISH_OPTS} >> $GITHUB_ENV
+          echo VERSION_NUMBER=${VERSION_NUMBER} >> $GITHUB_ENV
       - name: check version integrity
         run: |
           ERROR=''
+          echo VERSION: ${VERSION}, VERSION_NUMBER: ${VERSION_NUMBER}
           for dir in "." packages/apalis-{core,cron,redis,sql}; do
             PACKAGE=$(cargo get --root $dir -n)
             ACTUAL=$(cargo get --root $dir version)
